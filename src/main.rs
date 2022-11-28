@@ -1,11 +1,14 @@
 extern crate core;
 
 mod token;
+mod srack;
+mod srack_item;
 
 use crate::token::Token;
 use std::env;
 use std::fs;
-use rand;
+use crate::srack::Srack;
+use crate::srack_item::SrackItem;
 
 fn main() {
     let args: Vec<String> = env::args().collect();
@@ -42,23 +45,30 @@ fn lexer(source_code: String) -> Vec<Token> {
 }
 
 fn executor(tokens: Vec<Token>) {
-    let mut stack: Vec<String> = Vec::new();
+    let mut srack = Srack::new();
 
     for token in tokens {
         match token {
-            Token::Seed(value) => {}
-            Token::Push(variable) => { stack.push(variable.clone()) }
-            Token::Poop => { stack.pop(); }
-            Token::Call(function) => { exec_call(&function, &mut stack) }
+            Token::Seed(value) => { srack.init(value); }
+            Token::Push(variable) => {
+                // todo: parse string or int
+                srack.push(SrackItem::Str(variable))
+            }
+            Token::Poop => { srack.poop(); }
+            Token::Call(function) => { exec_call(&function, &srack) }
         }
     }
 }
 
-fn exec_call(func_name: &String, stack: &mut Vec<String>) {
+fn exec_call(func_name: &String, srack: &Srack) {
     match func_name.as_str() {
-        "print" => {
-            let val = stack[stack.len() - 1].clone();
-            print!("{}", val)
+        "println" => {
+            let to_print = srack.peek(0);
+
+            match to_print {
+                None => { panic!("Srack is empty on offset 0") }
+                Some(val) => { println!("{}", &val) }
+            }
         }
         // "summ" => {
         //     let left = &stack[stack.len() - 2];

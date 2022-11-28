@@ -1,5 +1,5 @@
 pub enum Token{
-    Seed(i32),
+    Seed(u64),
     Push(String),
     Poop,
     Call(String)
