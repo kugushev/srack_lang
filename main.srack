@@ -1,8 +1,16 @@
 seed 42
-push Hello
-push _
 push World
-call println
-call println
+push blahblahblah
+push Hello
+
 call println
 poop
+call println
+poop
+
+push blahblahblah
+push blahblahblah
+push 1
+push 2
+call +
+call println

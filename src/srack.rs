@@ -1,9 +1,9 @@
 use rand::rngs::StdRng;
 use rand::{Rng, SeedableRng};
-use crate::srack_item::SrackItem;
+use crate::srack_value::SrackValue;
 
 pub struct Srack {
-    collection: Vec<SrackItem>,
+    collection: Vec<SrackValue>,
     random: Option<StdRng>,
 }
 
@@ -19,7 +19,7 @@ impl Srack {
         self.random = Some(StdRng::seed_from_u64(seed))
     }
 
-    pub fn push(&mut self, item: SrackItem) {
+    pub fn push(&mut self, item: SrackValue) {
         match &mut self.random {
             None => { panic!("Srack didn't initialized") }
             Some(r) => {
@@ -59,7 +59,7 @@ impl Srack {
         }
     }
 
-    pub fn peek(&self, offset: usize) -> Option<&SrackItem> {
+    pub fn peek(&self, offset: usize) -> Option<&SrackValue> {
         if self.collection.len() > offset {
             let idx = self.collection.len() - offset - 1;
             Some(&self.collection[idx])
