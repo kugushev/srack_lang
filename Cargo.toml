@@ -1,7 +1,16 @@
 [package]
-name = "srack-lang"
+name = "srack_lang"
 version = "0.1.0"
 edition = "2021"
+
+[[bin]]
+name = "srack_lang"
+path = "src/main.rs"
+edition = "2021"
+
+[lib]
+name = "srack_lang"
+path = "src/lib.rs"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 

@@ -1,17 +1,20 @@
+use std::io::Write;
 use rand::rngs::StdRng;
 use rand::{Rng, SeedableRng};
-use crate::srack_value::SrackValue;
+use super::srack_value::SrackValue;
 
-pub struct Srack {
+pub(crate) struct Srack {
     collection: Vec<SrackValue>,
     random: Option<StdRng>,
+    verbose: bool,
 }
 
 impl Srack {
-    pub fn new() -> Srack {
+    pub fn new(verbose: bool) -> Srack {
         Srack {
             collection: Vec::new(),
             random: None,
+            verbose: verbose,
         }
     }
 
@@ -19,24 +22,33 @@ impl Srack {
         self.random = Some(StdRng::seed_from_u64(seed))
     }
 
-    pub fn push(&mut self, item: SrackValue) {
+    pub fn push(&mut self, item: SrackValue, stdout: &mut dyn Write) {
         match &mut self.random {
             None => { panic!("Srack didn't initialized") }
             Some(r) => {
                 let i = &r.gen_range(1..4);
                 match i {
                     1 => {
-                        println!(">log: push");
+                        if self.verbose {
+                            writeln!(stdout, ">log: push").ok();
+                        }
+
                         self.collection.push(item);
                     }
-                    2 => { println!(">log: do nothing"); }
+                    2 => {
+                        if self.verbose { writeln!(stdout, ">log: do nothing").ok(); }
+                    }
                     3 => {
-                        println!(">log: push x2");
+                        if self.verbose {
+                            writeln!(stdout, ">log: push x2").ok();
+                        }
                         self.collection.push(item.clone());
                         self.collection.push(item);
                     }
                     4 => {
-                        println!(">log: pop & push");
+                        if self.verbose {
+                            writeln!(stdout, ">log: pop & push").ok();
+                        }
                         self.collection.pop();
                         self.collection.push(item);
                     }
@@ -46,13 +58,15 @@ impl Srack {
         }
     }
 
-    pub fn poop(&mut self) {
+    pub fn poop(&mut self, stdout: &mut dyn Write) {
         match &mut self.random {
             None => { panic!("Srack didn't initialized") }
             Some(r) => {
                 let count = *&r.gen_range(1..10);
                 for _ in 0..count {
-                    println!(">log: Poop item");
+                    if self.verbose {
+                        writeln!(stdout, ">log: Poop item").ok();
+                    }
                     self.collection.pop();
                 }
             }
